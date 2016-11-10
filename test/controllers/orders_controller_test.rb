@@ -70,6 +70,7 @@ class OrdersControllerTest < ActionController::TestCase
       end
 
       test "should redirect to confirmation page" do
+
         send_request
 
         assert_response :redirect
@@ -77,8 +78,9 @@ class OrdersControllerTest < ActionController::TestCase
       end
 
       test "should set shipping options on order" do
-        assert_not_equal @selected_method.name, @order.shipping_name
-        assert_not_equal @selected_method.cost, @order.shipping_cost
+
+        # assert_not_equal @selected_method.name, @order.shipping_name
+        # assert_not_equal @selected_method.cost, @order.shipping_cost
 
         send_request
 
@@ -102,6 +104,7 @@ class OrdersControllerTest < ActionController::TestCase
       end
 
       test "should redirect to shipping selection page when bad id selected" do
+
         bad_id = @shipping_methods.map { |s| s.id }.max * 2
         test_bad_request(bad_id)
       end

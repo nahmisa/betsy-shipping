@@ -1,7 +1,8 @@
 require 'httparty'
 
 module ShippingService::APIClient
-  BASE_URL = 'https://shipping-sen-knk.herokuapp.com/shipping_services?'
+
+  BASE_URL = 'https://shipping-sen-knk.herokuapp.com/shipping_services'
   ADA_ZIP = '98101'
   FAKE_METHOD_DATA = [
     {id: 1, name: "UPS Ground", cost: 20.41},
@@ -11,29 +12,26 @@ module ShippingService::APIClient
   ]
 
   def methods_for_order(order)
-    # url = BASE_URL + "package=#{order.total_weight}&destination=#{order.billing_zip}&origin=" + ADA_ZIP
-    #
-    # data = HTTParty.get(url)
-    #
-    # methods = []
-    # data.each do |option|
-    #     # {"id":233,"name":"UPS Ground","cost":26.4}
-    #     methods << method_from_data(option)
-    # end
-    #
-    # return methods
-    # data.map do |option|
-    #   method_from_data(option)
-    # end
+    url = BASE_URL + "?package=#{order.total_weight}&destination=#{order.billing_zip}&origin=" + ADA_ZIP
+
+    data = HTTParty.get(url)
+
+    methods = []
+    data.each do |option|
+        # {"id":233,"name":"UPS Ground","cost":26.4}
+        methods << method_from_data(option)
+    end
+
+    return methods
     # The real implementation should use the order's
     # shipping details, calculate the weight of every
     # product in the order, and send that info to the API
     # along with a pre-defined "source" address.
     #
     # Instead we'll just return the fake data from above
-    FAKE_METHOD_DATA.map do |data|
-      method_from_data(data)
-    end
+    # FAKE_METHOD_DATA.map do |data|
+    #   method_from_data(data)
+    # end
   end
 
   def get_method(id)
@@ -57,10 +55,15 @@ module ShippingService::APIClient
       raise ShippingService::ShippingMethodNotFound.new
     end
 
-    FAKE_METHOD_DATA.select { |data| data[:id] == id.to_i }.first
+    url = BASE_URL + "/#{id}"
+    data = HTTParty.get(url)
+
+    method = method_from_data(data)
+
+    return method
   end
 
   def method_from_data(data)
-    ShippingService::ShippingMethod.new(data)
+    ShippingService::ShippingMethod.new(data["id"], data["name"], data["cost"])
   end
 end
