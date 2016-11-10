@@ -11,23 +11,29 @@ module ShippingService::APIClient
   ]
 
   def methods_for_order(order)
-    url = BASE_URL + "package=#{order.total_weight}&destination=#{order.billing_zip}&origin=" + ADA_ZIP
-
-    data = HTTParty.get(url)
-    
-
-    data.map do |option|
-      method_from_data(option)
-    end
+    # url = BASE_URL + "package=#{order.total_weight}&destination=#{order.billing_zip}&origin=" + ADA_ZIP
+    #
+    # data = HTTParty.get(url)
+    #
+    # methods = []
+    # data.each do |option|
+    #     # {"id":233,"name":"UPS Ground","cost":26.4}
+    #     methods << method_from_data(option)
+    # end
+    #
+    # return methods
+    # data.map do |option|
+    #   method_from_data(option)
+    # end
     # The real implementation should use the order's
     # shipping details, calculate the weight of every
     # product in the order, and send that info to the API
     # along with a pre-defined "source" address.
     #
     # Instead we'll just return the fake data from above
-    # FAKE_METHOD_DATA.map do |data|
-    #   method_from_data(data)
-    # end
+    FAKE_METHOD_DATA.map do |data|
+      method_from_data(data)
+    end
   end
 
   def get_method(id)
